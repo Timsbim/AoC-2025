@@ -48,6 +48,7 @@ def solve(num_digits):
 #    Part 1                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 1: ", end="")
+
 print(solution := solve(2))
 assert solution == (357 if EXAMPLE else 17142)
  
@@ -55,5 +56,6 @@ assert solution == (357 if EXAMPLE else 17142)
 #    Part 2                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 2: ", end="")
+
 print(solution := solve(12))
 assert solution == (3121910778619 if EXAMPLE else 169935154100102)
