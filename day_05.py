@@ -1,22 +1,6 @@
-# --------------------------------------------------------------------------- #
-#    Day 5                                                                    #
-# --------------------------------------------------------------------------- #
-from argparse import ArgumentParser
-from pprint import pprint
-
-
-# --------------------------------------------------------------------------- #
-#    Preparation                                                              #
-# --------------------------------------------------------------------------- #
 print("Day 5")
+EXAMPLE = False
 
-parser = ArgumentParser()
-parser.add_argument("-e", "--example", action="store_true")
-EXAMPLE = parser.parse_args().example
-
-# --------------------------------------------------------------------------- #
-#    Reading input                                                            #
-# --------------------------------------------------------------------------- #
 
 file_name = "2025/input/day_05" + ("_example" if EXAMPLE else "") + ".txt"
 with open(file_name, "r") as file:
@@ -27,17 +11,8 @@ with open(file_name, "r") as file:
         ranges.append(tuple(map(int, line.split("-"))))
     RANGES = tuple(ranges)
     IDS = tuple(map(int, file))
- 
-if EXAMPLE:
-    pprint(RANGES)
-    pprint(IDS)
- 
-# --------------------------------------------------------------------------- #
-#    Part 1                                                                   #
-# --------------------------------------------------------------------------- #
-print("Part 1: ", end="")
- 
 
+ 
 def part_1():
     count = 0
     for n in IDS:
@@ -48,13 +23,8 @@ def part_1():
     return count
  
 
-print(solution := part_1())
+print("Part 1:", solution := part_1())
 assert solution == (3 if EXAMPLE else 885)
- 
-# --------------------------------------------------------------------------- #
-#    Part 2                                                                   #
-# --------------------------------------------------------------------------- #
-print("Part 2: ", end="")
  
 
 def part_2():
@@ -68,5 +38,5 @@ def part_2():
     return count + stop - start + 1
  
 
-print(solution := part_2())
+print("Part 2:", solution := part_2())
 assert solution == (14 if EXAMPLE else 348115621205535)

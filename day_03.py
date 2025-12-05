@@ -1,35 +1,11 @@
-# --------------------------------------------------------------------------- #
-#    Day 3                                                                    #
-# --------------------------------------------------------------------------- #
-from argparse import ArgumentParser
-from pprint import pprint
-
-
-# --------------------------------------------------------------------------- #
-#    Preparation                                                              #
-# --------------------------------------------------------------------------- #
 print("Day 3")
+EXAMPLE = False
 
-parser = ArgumentParser()
-parser.add_argument("-e", "--example", action="store_true")
-EXAMPLE = parser.parse_args().example
-
-# --------------------------------------------------------------------------- #
-#    Reading input                                                            #
-# --------------------------------------------------------------------------- #
 
 file_name = f"2025/input/day_03{'_example' if EXAMPLE else ''}.txt"
 with open(file_name, "r") as file:
     BANKS = tuple(tuple(map(int, line.rstrip())) for line in file)
 LENGTH = len(BANKS[0])
-if EXAMPLE:
-    print(f"length of a bank: {LENGTH}")
-    print("banks:")
-    pprint(BANKS)
-
-# --------------------------------------------------------------------------- #
-#    Helpers                                                                  #
-# --------------------------------------------------------------------------- #
 
 
 def solve(num_digits):
@@ -44,18 +20,7 @@ def solve(num_digits):
     return total
  
 
-# --------------------------------------------------------------------------- #
-#    Part 1                                                                   #
-# --------------------------------------------------------------------------- #
-print("Part 1: ", end="")
-
-print(solution := solve(2))
+print("Part 1:", solution := solve(2))
 assert solution == (357 if EXAMPLE else 17142)
- 
-# --------------------------------------------------------------------------- #
-#    Part 2                                                                   #
-# --------------------------------------------------------------------------- #
-print("Part 2: ", end="")
-
-print(solution := solve(12))
+print("Part 2:", solution := solve(12))
 assert solution == (3121910778619 if EXAMPLE else 169935154100102)

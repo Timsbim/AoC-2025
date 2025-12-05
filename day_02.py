@@ -1,35 +1,14 @@
-# --------------------------------------------------------------------------- #
-#    Day 2                                                                    #
-# --------------------------------------------------------------------------- #
 import re
-from argparse import ArgumentParser
-from pprint import pprint
 
 
-# --------------------------------------------------------------------------- #
-#    Preparation                                                              #
-# --------------------------------------------------------------------------- #
 print("Day 2")
+EXAMPLE = False
 
-parser = ArgumentParser()
-parser.add_argument("-e", "--example", action="store_true")
-EXAMPLE = parser.parse_args().example
-
-# --------------------------------------------------------------------------- #
-#    Reading input                                                            #
-# --------------------------------------------------------------------------- #
 
 file_name = f"2025/input/day_02{'_example' if EXAMPLE else ''}.txt"
 with open(file_name, "r") as file:
     ranges = file.read().rstrip()
 RANGES = tuple(tuple(map(int, r.split("-"))) for r in ranges.split(","))
-if EXAMPLE:
-    pprint(RANGES)
-
-# --------------------------------------------------------------------------- #
-#    Part 1                                                                   #
-# --------------------------------------------------------------------------- #
-print("Part 1: ", end="")
 
 
 def part_1():
@@ -42,13 +21,8 @@ def part_1():
     return pwd
 
 
-print(solution := part_1())
+print("Part 1:", solution := part_1())
 assert solution == (1227775554 if EXAMPLE else 30608905813)
-
-# --------------------------------------------------------------------------- #
-#    Part 2                                                                   #
-# --------------------------------------------------------------------------- #
-print("Part 2: ", end="")
 
 
 def part_2():
@@ -61,5 +35,5 @@ def part_2():
     )
  
 
-print(solution := part_2())
+print("Part 2:", solution := part_2())
 assert solution == (4174379265 if EXAMPLE else 31898925685)
