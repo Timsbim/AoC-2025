@@ -33,7 +33,7 @@ def part_2():
         for n in range(start, end + 1)
         if re_rep.match(str(n))
     )
- 
+
 
 print("Part 2:", solution := part_2())
 assert solution == (4174379265 if EXAMPLE else 31898925685)
