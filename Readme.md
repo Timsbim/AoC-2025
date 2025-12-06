@@ -11,5 +11,5 @@ My statistics ⭐:
 
  [AoC]:https://adventofcode.com/2025
  [Eric]:https://was.tl
- [AoC_About]:https://adventofcode.com/2024/about
+ [AoC_About]:https://adventofcode.com/2025/about
  [PyPy]:https://pypy.org
