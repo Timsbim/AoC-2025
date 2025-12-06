@@ -11,7 +11,6 @@ with open(file_name, "r") as file:
 NUMBERS, OPS = tuple(lines[:-1]), tuple(lines[-1].split())
 
 
-
 def part_1():
     numbers = (tuple(map(int, line.split())) for line in NUMBERS)
     return sum(
