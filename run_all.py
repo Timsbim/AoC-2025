@@ -290,16 +290,16 @@ def day_7():
         beams = [MANIFOLD[0].index("S")]
         for row in MANIFOLD[1:]:
             beams_new = []
-            for beam in beams:
-                if row[beam] == ".":
-                    if not beams_new or beams_new[-1] != beam:
-                        beams_new.append(beam)
+            for b in beams:
+                if row[b] == ".":
+                    if not beams_new or beams_new[-1] != b:
+                        beams_new.append(b)
                 else:
                     splits += 1
-                    beam_new = beam - 1
-                    if not beams_new or beams_new[-1] != beam_new:
-                        beams_new.append(beam_new)
-                    beams_new.append(beam + 1)
+                    b_new = b - 1
+                    if not beams_new or beams_new[-1] != b_new:
+                        beams_new.append(b_new)
+                    beams_new.append(b + 1)
             beams = beams_new
         return splits
 
