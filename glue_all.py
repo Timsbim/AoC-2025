@@ -12,7 +12,7 @@ re_example = re.compile(r"^\s*EXAMPLE\s+=\s+(True|False)\s*$", re.M)
 re_print_day = re.compile(r'^\s*print\("Day\s+\d+', re.M)
 re_print_result = re.compile(r'print\(f?"Part ')
 
-days, modules = {}, set()
+days, modules = {}, {"re"}
 partials = {"argparse": {"ArgumentParser"}, "time": {"perf_counter"}}
 for file_path in Path().glob("day_*.py"):
     if "v1" in (name := file_path.name) or "part" in name:

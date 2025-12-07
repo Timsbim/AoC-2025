@@ -97,13 +97,21 @@ def day_2():
 
 
     def part_2():
-        re_rep = re.compile(r"^(\d+)\1+$")
-        return sum(
-            n
-            for start, end in RANGES
-            for n in range(start, end + 1)
-            if re_rep.match(str(n))
-        )
+        pwd = 0
+        for length in range(2, max(len(str(end)) for _, end in RANGES) + 1):
+            invalids = set()
+            for n in range(1, length):
+                if length % n != 0:
+                    continue
+                reps = length // n
+                for part in range(10 ** (n - 1), 10 ** n):
+                    invalids.add(int(str(part) * reps))
+            for n in invalids:
+                for start, end in RANGES:
+                    if start <= n <= end:
+                        pwd += n
+                        break
+        return pwd
 
 
     print(f"  - part 2:", solution := part_2())
