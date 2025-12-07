@@ -1,4 +1,4 @@
-# Solutions to the [Advent of Code 2025][AoC] mysteries.
+# Solutions of the [Advent of Code 2025][AoC] mysteries.
 
 Thank you [Eric Wastl][Eric] for creating this great source of joy! 🎄
 
