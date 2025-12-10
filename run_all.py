@@ -1,7 +1,8 @@
 import re
 from argparse import ArgumentParser
-from itertools import combinations
+from itertools import combinations, product
 from math import prod
+from scipy.optimize import linprog
 from time import perf_counter
 
 
@@ -373,6 +374,158 @@ def day_8():
     assert solution_2 == (25272 if EXAMPLE else 7264308110)
 
 
+def day_9():
+    print("Day 9:")
+
+    file_name = f"2025/input/day_09{'_example' if EXAMPLE else ''}.txt"
+    with open(file_name, "r") as file:
+        REDS = tuple(tuple(map(int, line.split(","))) for line in file)
+
+
+    def area(tile_1, tile_2):
+        (r1, c1), (r2, c2) = tile_1, tile_2
+        return (abs(r1 - r2) + 1) * (abs(c1 - c2) + 1)
+
+
+    def part_1():
+        return max(area(t1, t2) for t1, t2 in combinations(REDS, r=2))
+
+
+    print(f"  - part 1:", solution := part_1())
+    assert solution == (50 if EXAMPLE else 4748769124)
+
+
+    def key(combo): return area(*combo)
+
+
+    def state(border, c_min, r, c):
+        state = "out"
+        for c in range(c_min + 1, c + 1):
+            match state:
+                case "out":
+                    if (r, c) in border:
+                        state = "border"
+                        direction = "up" if (r - 1, c) in border else "down"
+                case "border":
+                    if (r, c) not in border:
+                        if (r - 1, c) in border:
+                            state = "out" if direction == "up" else "in"
+                        else:
+                            state = "in" if direction == "up" else "out"
+                case _:
+                    if (r, c) in border:
+                        state = "border"
+                        direction = "up" if (r - 1, c) in border else "down"
+        return "in" if state in ("in", "border") else "out"
+
+
+    def part_2():
+        edges = tuple(zip(REDS, [*REDS[1:], REDS[0]]))
+        border = set()
+        for (r1, c1), (r2, c2) in edges:
+            if r1 == r2:
+                c1, c2 = (c2, c1) if c2 < c1 else (c1, c2)
+                border |= {(r1, c) for c in range(c1, c2 + 1)}
+            else:
+                r1, r2 = (r2, r1) if r2 < r1 else (r1, r2)
+                border |= {(r, c1) for r in range(r1, r2 + 1)}
+
+        c_min = min(c for _, c in REDS) - 1
+    
+        combos = combinations(REDS, r=2)
+        for (r1, c1), (r2, c2) in sorted(combos, key=key, reverse=True):
+            r1, r2 = (r2, r1) if r2 < r1 else (r1, r2)
+            c1, c2 = (c2, c1) if c2 < c1 else (c1, c2)
+            if r1 == r2:
+                continue
+            elif c1 == c2:
+                continue
+            else:
+                if state(border, c_min, r1 + 1, c1 + 1) != "in":
+                    continue
+            for (rr1, cc1), (rr2, cc2) in edges:
+                if rr1 == rr2:
+                    cc1, cc2 = (cc2, cc1) if cc2 < cc1 else (cc1, cc2)
+                    if r1 < rr1 < r2 and (cc1 < c2 and c1 < cc2):
+                        break
+                else:
+                    rr1, rr2 = (rr2, rr1) if rr2 < rr1 else (rr1, rr2)
+                    if c1 < cc1 < c2 and (rr1 < r2 and r1 < rr2):
+                        break
+            else:
+                return area((r1, c1), (r2, c2))
+
+
+    print(f"  - part 2:", solution := part_2())
+    assert solution == (24 if EXAMPLE else 1525991432)
+
+
+def day_10():
+    print("Day 10:")
+
+    file_name = f"2025/input/day_10{'_example' if EXAMPLE else ''}.txt"
+    with open(file_name, "r") as file:
+        machines = []
+        for line in file:
+            parts = line.rstrip().split()
+            machine = [parts[0].strip("[]")]
+            machine.extend(
+                tuple(map(int, part[1:-1].split(",")))
+                for part in parts[1:]
+            )
+            machines.append(machine)
+    MACHINES = tuple(machines)
+
+
+    def part_1():
+        result = 0
+        for machine in MACHINES:
+            target = [0 if char == "." else 1 for char in machine[0]]
+            buttons = [
+                [1 if n in button else 0 for n in range(len(target))]
+                for button in machine[1:-1]
+            ]
+            matrix = [*zip(*buttons)]
+            minimum = float("inf")
+            for xs in product([0, 1], repeat=len(buttons)):
+                num = sum(xs)
+                if num >= minimum:
+                    continue
+                for row, b in zip(matrix, target):
+                    if sum(x * r for x, r in zip(xs, row)) % 2 != b:
+                        break
+                else:
+                    minimum = num
+            result += minimum
+        return result
+
+
+    print(f"  - part 1:", solution := part_1())
+    assert solution == (7 if EXAMPLE else 532)
+
+
+    def part_2():
+        count = 0
+        for machine in MACHINES:
+            idxs = range(len(machine[0]))
+            buttons = [
+                [1 if n in button else 0 for n in idxs]
+                for button in machine[1:-1]
+            ]
+            num_variables = len(buttons)
+            c = [1] * num_variables
+            A = [list(row) for row in zip(*buttons)]
+            b = list(machine[-1])
+            res = linprog(c, A_eq=A, b_eq=b, integrality=list(c))
+            count += res.fun
+    
+        return int(count)
+
+
+    print(f"  - part 2:", solution := part_2())
+    assert solution == (33 if EXAMPLE else 18387)
+
+
 days = {
     1: day_1,
     2: day_2,
@@ -381,7 +534,9 @@ days = {
     5: day_5,
     6: day_6,
     7: day_7,
-    8: day_8
+    8: day_8,
+    9: day_9,
+    10: day_10
 }
 
 
