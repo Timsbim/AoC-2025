@@ -2,7 +2,7 @@ print("Day 11")
 EXAMPLE = False
 
 
-file_name = f"2025/input/day_11{'_example' if EXAMPLE else ''}.txt"
+file_name = f"2025/input/day_11{'_example_1' if EXAMPLE else ''}.txt"
 CONNECTS = {}
 with open(file_name, "r") as file:
     for line in file:

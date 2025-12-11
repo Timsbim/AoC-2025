@@ -1,5 +1,6 @@
 import re
 from argparse import ArgumentParser
+from functools import cache, partial
 from itertools import combinations, product
 from math import prod
 from scipy.optimize import linprog
@@ -529,7 +530,7 @@ def day_10():
 def day_11():
     print("Day 11:")
 
-    file_name = f"2025/input/day_11{'_example' if EXAMPLE else ''}.txt"
+    file_name = f"2025/input/day_11{'_example_1' if EXAMPLE else ''}.txt"
     CONNECTS = {}
     with open(file_name, "r") as file:
         for line in file:
@@ -553,46 +554,42 @@ def day_11():
     print(f"  - part 1:", solution := part_1())
     assert solution == (5 if EXAMPLE else 497)
 
+    if EXAMPLE:
+        CONNECTS = {}
+        with open("2025/input/day_11_example_2.txt", "r") as file:
+            for line in file:
+                left, right = line.rstrip().split(": ")
+                CONNECTS[left] = set(right.split())
+        pprint(CONNECTS)
+
 
     def part_2():
-        if EXAMPLE:
-            return 2
-
-        levels = [
-            {"svr"},
-            {"hin", "kvv", "xsj", "qef", "qhx"},
-            {"vab", "rpz", "vom", "heu", "dfh"},
-            {"wwq", "eiu", "gdg", "wru"},
-            {"uit", "mqr", "etj"},
-            {"ymg", "tnx", "you"},
-            {"out"}
-        ]
+        graph = {}
+        for n0, nodes in CONNECTS.items():
+            for n1 in nodes:
+                graph.setdefault(n1, set()).add(n0)
     
-        counts_last = {"svr": 1}
-        for level, (starts, targets) in enumerate(zip(levels, levels[1:])):
-            counts_level = {}
-            for n0 in starts:
-                counts = {}
-                stack = [[n0]]
-                while stack:
-                    path = stack.pop()
-                    for node in CONNECTS.get(path[-1], []):
-                        if node in targets:
-                            if level == 1:
-                                if "fft" in path:
-                                    counts[node] = counts.get(node, 0) + 1
-                            elif level == 4:
-                                if "dac" in path:
-                                    counts[node] = counts.get(node, 0) + 1
-                            else:
-                                counts[node] = counts.get(node, 0) + 1
-                        elif node not in path:
-                            stack.append(path + [node])
-                for n, count in counts.items():
-                    counts_level[n] = counts_level.get(n, 0) + count * counts_last[n0]
-            counts_last = counts_level
-    
-        return sum(counts_last.values())
+        @cache
+        def count(node):
+            if node == "svr":
+                return {"none": 1, "fft": 0, "dac": 0, "both": 0}
+        
+            counts_new = {"none": 0, "fft": 0, "dac": 0, "both": 0}
+            for n in graph[node]:
+                counts = count(n)
+                if node == "fft":
+                    counts_new["fft"] += counts["none"]
+                    counts_new["both"] += counts["dac"]
+                elif node == "dac":
+                    counts_new["dac"] += counts["none"]
+                    counts_new["both"] += counts["fft"]
+                else:
+                    for state in "none", "fft", "dac", "both":
+                        counts_new[state] += counts[state]
+        
+            return counts_new
+        
+        return count("out")["both"]
 
 
     print(f"  - part 2:", solution := part_2())
